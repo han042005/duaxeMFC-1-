@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "framework.h"
 #include "duaxeMFC.h"
 #include "ChildView.h"
@@ -69,7 +69,7 @@ int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct) {
         return -1;
 
     // Phát nhạc nền chờ lặp lại
-    PlaySound(L"C:\\Users\\ADMIN\\Downloads\\ChaoMungDenBinhNguyenVoTanVuhuynhRemix-VuHuynh-7847989.wav", NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    PlaySound(L"C:\\Users\\ADMIN\\Downloads\\flat-8-bit-gaming-music-instrumental-211547.wav", NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
     isMusicPlaying = true;
 
     SetFocus();
@@ -114,8 +114,6 @@ int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 }
 
 
-
-
 void CChildView::OnStartButtonClicked()
 {
     if (isMusicPlaying) {
@@ -124,7 +122,7 @@ void CChildView::OnStartButtonClicked()
         isMusicPlaying = false;
     }
     // Phát nhạc khi game bắt đầu
-    PlaySound(L"C:\\Users\\ADMIN\\Downloads\\Nhacduaxe.mp3.wav", NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    PlaySound(L"C:\\Users\\ADMIN\\Downloads\\pixel-245147.wav", NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
     isMusicPlaying = true;
 
     // Khi nhấn nút "Bắt đầu"
@@ -177,53 +175,69 @@ void CChildView::OnPaint() {
         return;
     }
 
-    // Nếu game đã kết thúc, vẽ nền trắng và chỉ giữ lại hình chữ nhật
+    // Nếu game đã kết thúc
     if (dung) {
-        // Vẽ nền hình chữ nhật
+        // Vẽ nền hình chữ nhật (có thể thay đổi màu hoặc kiểu vẽ)
         CRect backgroundRect(0, 0, roadWidth, roadHeight);
         dc.FillSolidRect(backgroundRect, RGB(200, 200, 255));  // Nền hình chữ nhật
 
-        // Tạo đối tượng CImage để tải hình ảnh nền khi game kết thúc
+        // Tải hình ảnh khi game kết thúc (game over)
         CImage endImage;
-        HRESULT hr = endImage.Load(L"C:\\Users\\ADMIN\\Downloads\\z6101705081283_3e732b2a2785c2802e96ebc55641fde1.jpg");  // Đường dẫn tới hình ảnh
-
+        HRESULT hr = endImage.Load(L"C:\\Users\\ADMIN\\Downloads\\z6101705081283_3e732b2a2785c2802e96ebc55641fde1.jpg");
         if (SUCCEEDED(hr)) {
-            // Lấy kích thước của hình ảnh
+            // Vẽ hình ảnh game over
             int imgWidth = endImage.GetWidth();
             int imgHeight = endImage.GetHeight();
-
-            // Tính toán tỷ lệ để thu phóng hình ảnh sao cho vừa với kích thước đường đua
             double scaleX = (double)roadWidth / imgWidth;
             double scaleY = (double)roadHeight / imgHeight;
-
-            // Vẽ hình ảnh vào khu vực nền
             endImage.Draw(dc.m_hDC, 0, 0, (int)(imgWidth * scaleX), (int)(imgHeight * scaleY));
         }
 
-      
-
-        // Tải hình ảnh "Over game"
+        // Hiển thị hình ảnh "Game Over"
         CImage imageInsideFrame;
-        hr = imageInsideFrame.Load(L"C:\\Users\\ADMIN\\Downloads\\image-removebg-preview (3).png");  // Đường dẫn hình ảnh bạn muốn vẽ vào khung
-
+        hr = imageInsideFrame.Load(L"C:\\Users\\ADMIN\\Downloads\\image-removebg-preview (3).png");
         if (SUCCEEDED(hr)) {
-            // Lấy kích thước của hình ảnh
             int imgWidth = imageInsideFrame.GetWidth();
             int imgHeight = imageInsideFrame.GetHeight();
-
-            // Tính toán tỷ lệ để thu phóng hình ảnh sao cho vừa với kích thước của khung
-            double scaleX = (double)(roadWidth)*0.7/  imgWidth; // Vẽ hình ảnh sao cho phù hợp với chiều rộng của đường đua
-            double scaleY = (double)(roadHeight)*0.4 / imgHeight; // Vẽ hình ảnh sao cho phù hợp với chiều cao của đường đua
-
-            int offsetY = 30; // Giá trị này có thể điều chỉnh để di chuyển hình ảnh xuống 
-
-            // Tính toán vị trí để căn giữa ảnh
-            int xPos = (roadWidth - (int)(imgWidth * scaleX)) / 2; // Vị trí X căn giữa
-            int yPos = (roadHeight - (int)(imgHeight * scaleY)) / 2 + offsetY; // Vị trí Y căn giữa
-
-            // Vẽ hình ảnh trực tiếp lên màn hình tại vị trí đã tính toán
+            double scaleX = (double)(roadWidth) * 0.7 / imgWidth;  // Cân chỉnh tỷ lệ
+            double scaleY = (double)(roadHeight) * 0.4 / imgHeight;
+            int offsetY = 30;
+            int xPos = (roadWidth - (int)(imgWidth * scaleX)) / 2;
+            int yPos = (roadHeight - (int)(imgHeight * scaleY)) / 2 + offsetY;
             imageInsideFrame.Draw(dc.m_hDC, xPos, yPos, (int)(imgWidth * scaleX), (int)(imgHeight * scaleY));
-        
+        }
+
+        return;
+    }
+
+    // Nếu game chiến thắng, vẽ nền hình chữ nhật khác
+    if (gameComplete) {
+
+        // Dừng nhạc khi game kết thúc nếu đang phát nhạc
+        if (isMusicPlaying) {
+            PlaySound(NULL, 0, 0); // Dừng nhạc hiện tại
+            isMusicPlaying = false;
+        }
+
+        // Phát nhạc chiến thắng
+        PlaySound(L"C:\\Users\\ADMIN\\Downloads\\nhacchienthangduaxe.wav", NULL, SND_FILENAME | SND_ASYNC);  // Thay bằng đường dẫn nhạc chiến thắng của bạn
+        isMusicPlaying = true;
+
+        // Vẽ nền mới cho chiến thắng
+        CRect winRect(0, 0, roadWidth, roadHeight);
+        dc.FillSolidRect(winRect, RGB(144, 238, 144));  // Màu nền chiến thắng (màu xanh lá)
+
+        // Tải hình ảnh "Victory"
+        CImage victoryImage;
+        HRESULT hr = victoryImage.Load(L"C:\\Users\\ADMIN\\Downloads\\Remove-bg.ai_1733459294420.png"); // Đường dẫn đến hình chiến thắng
+
+        if (SUCCEEDED(hr)) {
+            // Vẽ hình ảnh chiến thắng
+            int imgWidth = victoryImage.GetWidth();
+            int imgHeight = victoryImage.GetHeight();
+            double scaleX = (double)roadWidth / imgWidth;
+            double scaleY = (double)roadHeight / imgHeight;
+            victoryImage.Draw(dc.m_hDC, 0, 0, (int)(imgWidth * scaleX), (int)(imgHeight * scaleY));
         }
 
         return;
@@ -237,7 +251,6 @@ void CChildView::OnPaint() {
     }
     xe1.drawPaint(&dc);
 }
-
 
 
 void CChildView::OnTimer(UINT_PTR nIDEvent) {
